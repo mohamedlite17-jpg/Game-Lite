@@ -23,7 +23,7 @@ jobs:
       - name: Lock portrait
         run: sed -i 's/<activity/<activity android:screenOrientation="portrait"/' android/app/src/main/AndroidManifest.xml
       - run: npx cap sync android
-      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - run: cd android && sed -i "s/networkTimeout=.*/networkTimeout=120000/" gradle/wrapper/gradle-wrapper.properties && chmod +x gradlew && export GRADLE_OPTS="-Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=60000"; for i in 1 2 3; do ./gradlew assembleDebug && exit 0; sleep 15; done; exit 1
       - uses: actions/upload-artifact@v4
         with:
           name: game-apk
